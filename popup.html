@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Skipper</title>
+    <style>
+        body {
+            width: 400px;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            margin: 0 0 20px 0;
+            font-size: 20px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .channel-list {
+            max-height: 120px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .channel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .channel-item:last-child {
+            border-bottom: none;
+        }
+        
+        .channel-url {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            word-break: break-all;
+            margin-right: 10px;
+        }
+        
+        .remove-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-size: 12px;
+            width: auto;
+            flex-shrink: 0;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        
+        .current-channel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        
+        .help-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .add-current-btn {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            margin-top: 10px;
+        }
+        
+        .debug-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 11px;
+        }
+        
+        .debug-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #FFD700;
+        }
+        
+        .debug-info {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 2px 0;
+        }
+        
+        .debug-toggle {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 YouTube Video Skipper</h1>
+        
+        <div class="toggle-container">
+            <label for="enabled">Enable Extension</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="enabled" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="form-group">
+            <label for="skipSeconds">Skip first (seconds):</label>
+            <input type="number" id="skipSeconds" value="7" min="1" max="60">
+        </div>
+        
+        <div class="form-group">
+            <label for="channelInput">Add Channel URL:</label>
+            <input type="text" id="channelInput" placeholder="https://www.youtube.com/channel/...">
+            <div class="help-text">Paste the full YouTube channel URL</div>
+            <button id="addChannel">Add Channel</button>
+        </div>
+        
+        <div class="channel-list" id="channelList">
+            <!-- Channels will be listed here -->
+        </div>
+        
+        <div class="current-channel" id="currentChannel">
+            <strong>Current Channel:</strong> <span id="channelName">Not on a video page</span>
+        </div>
+        
+        <button id="addCurrentChannel" class="add-current-btn">Add Current Channel</button>
+        
+        <div class="debug-section" id="debugSection" style="display: none;">
+            <div class="debug-title">🔧 Debug Information</div>
+            <div class="debug-info">Channel URL: <span id="debugChannelUrl">Not detected</span></div>
+            <div class="debug-info">Channel ID: <span id="debugChannelId">Not extracted</span></div>
+            <div class="debug-info">Is Target Channel: <span id="debugIsTarget">Unknown</span></div>
+            <div class="debug-info">Extension Enabled: <span id="debugEnabled">Unknown</span></div>
+            <div class="debug-info">Skip Seconds: <span id="debugSkipSeconds">Unknown</span></div>
+            <div class="debug-info">Video Found: <span id="debugVideoFound">Unknown</span></div>
+        </div>
+        
+        <button id="toggleDebug" class="debug-toggle">Toggle Debug Info</button>
+        
+        <div class="status" id="status" style="display: none;"></div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html> 

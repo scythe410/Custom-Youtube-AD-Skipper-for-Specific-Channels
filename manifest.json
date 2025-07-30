@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Video Skipper",
+  "version": "1.0",
+  "description": "Skip the first 7 seconds of videos on specific YouTube channels",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Video Skipper"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+} 
